@@ -1,0 +1,70 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // 1. Master Catch-All: Denegación de acceso por defecto
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- PRIMITIVOS GLOBALES DE SEGURIDAD ---
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // Lee el claim del token de seguridad personalizado (operador / supervisor / gerente)
+    function getUserRole() {
+      return request.auth.token.role;
+    }
+
+    function isRole(role) {
+      return isSignedIn() && getUserRole() == role;
+    }
+
+    function emailVerified() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    // --- REGLAS BASADAS EN ROLES PARA ENTIDADES INDUSTRIALES ---
+
+    // Colección /lineas y subcolecciones (Turnos)
+    match /lineas/{lineaId} {
+      allow read: if isSignedIn();
+      allow write: if false; // Solo inicialización o cuentas de servicio de automatización
+
+      match /turnos/{turnoId} {
+        allow read: if isSignedIn();
+        // Los operadores, supervisores y gerentes calibran estadísticas de turno
+        allow write: if isRole('operador') || isRole('supervisor') || isRole('gerente');
+      }
+    }
+
+    // Colección de /ordenes
+    match /ordenes/{ordenId} {
+      // Cualquier rol operativo o directivo puede auditar órdenes de manufactura
+      allow read: if isRole('operador') || isRole('supervisor') || isRole('gerente');
+      // Operarios terminan lotes, supervisores planifican
+      allow write: if isRole('operador') || isRole('supervisor') || isRole('gerente');
+    }
+
+    // Colección de /pedidos
+    match /pedidos/{pedidoId} {
+      // Acceso restringido a Supervisores y Gerentes que vigilan despacho y OTIF
+      allow read: if isRole('supervisor') || isRole('gerente');
+      allow write: if isRole('supervisor') || isRole('gerente');
+    }
+
+    // Colección de /alarmas de seguridad (PLC)
+    match /alarmas/{alarmaId} {
+      allow read: if isSignedIn();
+      // Emisión de alertas requiere rol de piso
+      allow write: if isRole('operador') || isRole('supervisor') || isRole('gerente');
+    }
+
+    // Colección de resumen financiero / estructural /kpis
+    match /kpis/{document} {
+      allow read: if isSignedIn();
+      allow write: if false; // Solo actualizable mediante Cloud Functions o Cuenta de Servicio
+    }
+  }
+}

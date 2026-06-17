@@ -1,0 +1,6 @@
+{
+  "name": "Control Industrial OEE y OTIF",
+  "description": "Tablero de control industrial de Alimentos del Valle S.A.S. para monitorizar en tiempo real el OEE, OTIF y alarmas críticas.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

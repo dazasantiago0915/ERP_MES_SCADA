@@ -1,0 +1,14 @@
+/**
+ * @license
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+import * as admin from 'firebase-admin';
+
+if (!admin.apps.length) {
+  admin.initializeApp();
+}
+
+export const db = admin.firestore();
+export const auth = admin.auth();
+export const messaging = admin.messaging();

@@ -1,0 +1,47 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "turnos",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "lineaId", "order": "ASCENDING" },
+        { "fieldPath": "fecha", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "pedidos",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "estadoPedido", "order": "ASCENDING" },
+        { "fieldPath": "fechaCompromiso", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "pedidos",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "otif", "order": "ASCENDING" },
+        { "fieldPath": "fechaCompromiso", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "alarmas",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "nivel", "order": "ASCENDING" },
+        { "fieldPath": "resuelta", "order": "ASCENDING" },
+        { "fieldPath": "timestamp", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "alarmas",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "lineaId", "order": "ASCENDING" },
+        { "fieldPath": "resuelta", "order": "ASCENDING" },
+        { "fieldPath": "timestamp", "order": "DESCENDING" }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}
